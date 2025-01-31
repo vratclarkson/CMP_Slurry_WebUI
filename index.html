@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LCA Comparison Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Product Life Cycle Assessment Comparison</h1>
+        
+        <div class="comparison-container">
+            <!-- Process A Section -->
+            <div class="process-section" id="processA">
+                <h2>Process A</h2>
+                <div class="process-steps">
+                    <div class="step" data-step="1">
+                        <h3>Step 1: Material Extraction</h3>
+                        <div class="input-group">
+                            <label>Energy Consumption (kWh):</label>
+                            <input type="number" step="0.1">
+                        </div>
+                        <!-- Add more input fields as needed -->
+                    </div>
+                    <!-- Steps will be added dynamically -->
+                </div>
+                <button class="add-step" onclick="addStep('A')">Add Step</button>
+            </div>
+
+            <!-- Process B Section -->
+            <div class="process-section" id="processB">
+                <h2>Process B</h2>
+                <div class="process-steps">
+                    <div class="step" data-step="1">
+                        <h3>Step 1: Material Extraction</h3>
+                        <div class="input-group">
+                            <label>Energy Consumption (kWh):</label>
+                            <input type="number" step="0.1">
+                        </div>
+                    </div>
+                </div>
+                <button class="add-step" onclick="addStep('B')">Add Step</button>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="compareProcesses()">Compare Processes</button>
+            <button onclick="saveData()">Save Data</button>
+        </div>
+
+        <div id="comparisonResults" class="comparison-results">
+            <!-- Comparison results will be displayed here -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html> 
