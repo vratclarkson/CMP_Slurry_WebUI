@@ -379,11 +379,11 @@ function renderStepForm(stepEl, processName) {
   }).join('');
 
   stepEl.querySelector('.dynamic-fields').innerHTML = `
-    <details open>
+    <details class="params" open>
       <summary>Parameters</summary>
       <div class="row-3">${inputsMarkup}</div>
     </details>
-    <details>
+    <details class="materials">
       <summary>Materials & Solvents</summary>
       <div class="materials-editor">
         <div class="rows"></div>
@@ -393,8 +393,8 @@ function renderStepForm(stepEl, processName) {
         </div>
       </div>
     </details>
-    <details open>
-      <summary>Step outputs</summary>
+    <details class="outputs" open>
+      <summary>This Process Outputs</summary>
       <div class="row-3">
         <div>
           <label>Energy (kWh)</label>
@@ -511,40 +511,68 @@ function computeStepOutputs(stepEl, processName) {
 function addStep(process) {
   const stepsContainer = document.querySelector(`#process${process} .process-steps`);
   const stepCount = stepsContainer.children.length + 1;
-  const step = document.createElement('div');
+  const step = document.createElement('details');
   step.className = 'step';
+  step.setAttribute('open', '');
   step.dataset.step = String(stepCount);
   step.innerHTML = `
-    <div class="row">
-      <div>
-        <label>Known process</label>
-        <select class="process-select">
-          <option value="" disabled selected>Select a process</option>
-          ${buildProcessOptions()}
-        </select>
-      </div>
-      <div>
-        <label>Custom label</label>
-        <input class="custom-label" type="text" placeholder="Optional label (e.g., Reactor #2)" />
-      </div>
-      <div class="inline right">
+    <summary class="step-summary">
+      <div class="inline step-summary-inner">
+        <span class="step-title">Select a process</span>
         <button class="danger" type="button">Remove</button>
       </div>
+    </summary>
+    <div class="step-body">
+      <div class="row">
+        <div>
+          <label>Known process</label>
+          <select class="process-select">
+            <option value="" disabled selected>Select a process</option>
+            ${buildProcessOptions()}
+          </select>
+        </div>
+        <div>
+          <label>Custom label</label>
+          <input class="custom-label" type="text" placeholder="Optional label (e.g., Reactor #2)" />
+        </div>
+        <div></div>
+      </div>
+      <div class="dynamic-fields"></div>
     </div>
-    <div class="dynamic-fields"></div>
   `;
 
-  step.querySelector('.danger').addEventListener('click', () => {
+  step.querySelector('.danger').addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     step.remove();
   });
 
   const select = step.querySelector('.process-select');
-  select.addEventListener('change', (e) => {
+  const custom = step.querySelector('.custom-label');
+  const updateSummary = () => {
+    const title = step.querySelector('.step-title');
+    let label = (custom?.value || '').trim();
+    if (!label) {
+      if (select?.value) {
+        const text = select.options[select.selectedIndex]?.text || select.value;
+        label = text;
+      } else {
+        label = 'Select a process';
+      }
+    }
+    if (title) title.textContent = label;
+  };
+
+  select.addEventListener('change', () => {
     const name = select.value;
     renderStepForm(step, name);
+    updateSummary();
   });
+  custom.addEventListener('input', updateSummary);
 
   stepsContainer.appendChild(step);
+  // Initialize summary once appended
+  updateSummary();
 }
 
 function collectData(process) {

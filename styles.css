@@ -85,23 +85,107 @@ body {
 .process-name-input { width: 240px; }
 
 .process-steps { margin-top: 12px; display: grid; gap: 12px; }
+.section-foot { margin-top: 12px; display: flex; justify-content: center; }
+
+/* Collapsible step container */
 .step {
   border: 1px dashed var(--border);
   border-radius: 12px;
-  padding: 12px;
+  padding: 0;
 }
+.step > summary {
+  list-style: none;
+  padding: 12px 36px 12px 12px; /* compact space for right chevron */
+  border-bottom: 1px dashed var(--border);
+  cursor: pointer;
+}
+.step > summary::-webkit-details-marker { display: none; }
+.step .step-summary-inner { justify-content: space-between; align-items: center; width: 100%; }
+.step > summary .danger { margin-right: 8px; } /* tighter spacing between Remove and arrow */
+.step .step-title { font-weight: 600; }
+.step[open] > summary { border-bottom-color: var(--border); }
+.step .step-body { padding: 12px; }
 
-.step .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.step .row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
 .step .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
 label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
 input[type="number"], select, input[type="text"] {
   width: 100%;
-  background: #0b132b;
+  background: #0c1330;
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
+}
+
+/* Flatten selects (remove glossy look) and add minimal arrow */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.0), rgba(255,255,255,0.0)),
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="%23AFC2E8" stroke-width="2" stroke-linecap="round"/></svg>');
+  background-repeat: no-repeat, no-repeat;
+  background-position: left 12px center, right 12px center;
+  background-size: 0, 12px 8px;
+  padding-right: 34px;
+}
+
+/* Larger size for the top process dropdown */
+.step .process-select {
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+/* Details headings sizing for hierarchy */
+/* Group headings and layouts */
+details.params,
+details.materials,
+details.outputs {
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+}
+
+/* Move arrow to the right; hide default triangle */
+details > summary {
+  list-style: none;
+  outline: none;
+  position: relative;
+  padding-right: 28px; /* more room for chevron */
+}
+details > summary::-webkit-details-marker { display: none; }
+details[open] > summary::after,
+details:not([open]) > summary::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path d="M2 3l3 3 3-3" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><path d="M2 3l3 3 3-3" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>') no-repeat center / contain;
+  background: #afc2e8;
+  transform: rotate(0deg);
+  transition: transform .2s ease;
+}
+details[open] > summary::after { transform: rotate(180deg); }
+
+/* Font sizes for hierarchy */
+details.params > summary { font-size: 18px; }
+details.materials > summary { font-size: 16px; }
+details.outputs > summary { font-size: 16px; }
+
+/* Remove buttons for materials/waters rows */
+.materials-editor .material-row .danger,
+.materials-editor .water-row .danger {
+  border-radius: 12px;
+  padding: 8px 10px;
+  width: 40px;
+  justify-self: end;
 }
 
 .add-step, .primary, .ghost, .danger {
