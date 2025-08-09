@@ -1,59 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LCA Comparison Tool</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Product Life Cycle Assessment Comparison</h1>
-        
-        <div class="comparison-container">
-            <!-- Process A Section -->
-            <div class="process-section" id="processA">
-                <h2>Process A</h2>
-                <div class="process-steps">
-                    <div class="step" data-step="1">
-                        <h3>Step 1: Material Extraction</h3>
-                        <div class="input-group">
-                            <label>Energy Consumption (kWh):</label>
-                            <input type="number" step="0.1">
-                        </div>
-                        <!-- Add more input fields as needed -->
-                    </div>
-                    <!-- Steps will be added dynamically -->
-                </div>
-                <button class="add-step" onclick="addStep('A')">Add Step</button>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Process LCA Comparator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Compare process chains with built-in templates and energy models (kWh, water, emissions)." />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-content">
+        <h1>CMP Slurry Manufacturing — LCA Modeler</h1>
+        <p class="subtitle">Build process chains with domain templates (calcination, hydrothermal, milling, etc.), auto-calculate energy (kWh), water, and emissions.</p>
+      </div>
+      <div class="settings-bar">
+        <div class="setting">
+          <label for="ambientTemp">Ambient temperature (°C)</label>
+          <input id="ambientTemp" type="number" step="1" value="25" />
+        </div>
+        <div class="setting">
+          <label for="electricityDataset">Electricity dataset</label>
+          <select id="electricityDataset"></select>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="comparison-container">
+        <div class="process-section" id="processA">
+          <div class="section-head">
+            <div class="inline" style="gap:10px">
+              <h2 class="process-title" data-proc="A">Process A</h2>
+              <input type="text" class="process-name-input" data-proc="A" placeholder="Enter process name" value="Process A" />
             </div>
+            <button class="add-step" onclick="addStep('A')">Add Process Step</button>
+          </div>
+          <div class="process-steps"></div>
+        </div>
 
-            <!-- Process B Section -->
-            <div class="process-section" id="processB">
-                <h2>Process B</h2>
-                <div class="process-steps">
-                    <div class="step" data-step="1">
-                        <h3>Step 1: Material Extraction</h3>
-                        <div class="input-group">
-                            <label>Energy Consumption (kWh):</label>
-                            <input type="number" step="0.1">
-                        </div>
-                    </div>
-                </div>
-                <button class="add-step" onclick="addStep('B')">Add Step</button>
+        <div class="process-section" id="processB">
+          <div class="section-head">
+            <div class="inline" style="gap:10px">
+              <h2 class="process-title" data-proc="B">Process B</h2>
+              <input type="text" class="process-name-input" data-proc="B" placeholder="Enter process name" value="Process B" />
             </div>
+            <button class="add-step" onclick="addStep('B')">Add Process Step</button>
+          </div>
+          <div class="process-steps"></div>
         </div>
+      </section>
 
-        <div class="controls">
-            <button onclick="compareProcesses()">Compare Processes</button>
-            <button onclick="saveData()">Save Data</button>
+      <section class="controls">
+        <button class="primary" onclick="compareProcesses()">Compare Processes</button>
+        <button onclick="saveData()">Save Scenario</button>
+        <button class="ghost" onclick="resetAll()">Reset</button>
+      </section>
+
+      <section id="comparisonResults" class="comparison-results"></section>
+
+      <section id="vizSection" class="viz-section">
+        <div class="section-head">
+          <h2>Visualizations</h2>
+          <div class="inline right" style="gap:10px">
+            <label for="sunburstMetric">Sunburst metric</label>
+            <select id="sunburstMetric">
+              <option value="energy" selected>Energy</option>
+              <option value="water">Water</option>
+              <option value="emissions">Impact (total)</option>
+            </select>
+            <label for="heatmapMetric">Heatmap metric</label>
+            <select id="heatmapMetric">
+              <option value="energy" selected>Energy</option>
+              <option value="water">Water</option>
+              <option value="emissions">Impact (total)</option>
+            </select>
+            <button class="primary" type="button" onclick="renderVisualizations()">Generate Visuals</button>
+            <button type="button" onclick="exportPDF()">Export PDF</button>
+          </div>
         </div>
-
-        <div id="comparisonResults" class="comparison-results">
-            <!-- Comparison results will be displayed here -->
+        <div class="charts-grid">
+          <div id="barsChart" class="chart" aria-label="Totals comparison chart"></div>
+          <div id="heatmapChart" class="chart" aria-label="Step-level heatmap"></div>
+          <div id="sunburstChart" class="chart" aria-label="Sunburst breakdown"></div>
+          <div id="sankeyBreakdownChart" class="chart" aria-label="Energy flow (Steps → Process → Total)"></div>
+          <div id="sankeySourceChart" class="chart" aria-label="Energy source (Grid → Process → Steps)"></div>
         </div>
-    </div>
+        <div id="impactCallout" class="impact"></div>
+      </section>
 
+      <section id="impactsDbSection" class="db-section">
+        <div class="section-head">
+          <h2>Impact Factors (collapsible)</h2>
+          <div class="inline right">
+            <button class="ghost" type="button" onclick="toggleDbPanel()">Toggle Panel</button>
+            <button type="button" onclick="resetImpactDb()">Reset to Defaults</button>
+          </div>
+        </div>
+        <div id="dbPanel" class="db-panel" hidden>
+          <div class="db-grid">
+            <div>
+              <h3>Chemicals (kg CO₂e per kg)</h3>
+              <div id="chemicalsTable" class="table"></div>
+              <button class="add-step" type="button" onclick="addChemicalRow()">Add chemical</button>
+            </div>
+            <div>
+              <h3>Water types (kg CO₂e per liter)</h3>
+              <div id="watersTable" class="table"></div>
+              <button class="add-step" type="button" onclick="addWaterRow()">Add water type</button>
+            </div>
+          </div>
+          <div class="inline" style="margin-top:10px; gap:10px">
+            <button class="primary" type="button" onclick="saveImpactDb()">Save Impact Factors</button>
+            <small class="hint">These factors will be used to compute materials and solvent CO₂e in each step.</small>
+          </div>
+          
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>For demonstration only — formulas are simplified engineering estimates. Customize per your plant data.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="app.js"></script>
-</body>
-</html> 
+  </body>
+</html>
