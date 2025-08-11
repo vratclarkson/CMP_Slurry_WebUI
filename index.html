@@ -70,17 +70,25 @@
         <div class="section-head">
           <h2>Visualizations</h2>
           <div class="inline right" style="gap:10px">
+            <label for="impactIndicator">Impact indicator</label>
+            <select id="impactIndicator">
+              <option value="GWP" selected>GWP (CO₂e)</option>
+              <option value="ADP">ADP</option>
+              <option value="WaterUse">Water use</option>
+              <option value="AP">AP</option>
+              <option value="FETP">FETP</option>
+            </select>
             <label for="sunburstMetric">Sunburst metric</label>
             <select id="sunburstMetric">
               <option value="energy" selected>Energy</option>
               <option value="water">Water</option>
-              <option value="emissions">Impact (total)</option>
+              <option value="emissions">Impact (selected)</option>
             </select>
             <label for="heatmapMetric">Heatmap metric</label>
             <select id="heatmapMetric">
               <option value="energy" selected>Energy</option>
               <option value="water">Water</option>
-              <option value="emissions">Impact (total)</option>
+              <option value="emissions">Impact (selected)</option>
             </select>
             <button class="primary" type="button" onclick="renderVisualizations()">Generate Visuals</button>
             <button type="button" onclick="exportPDF()">Export PDF</button>
@@ -89,9 +97,9 @@
         <div class="charts-grid">
           <div id="barsChart" class="chart" aria-label="Totals comparison chart"></div>
           <div id="heatmapChart" class="chart" aria-label="Step-level heatmap"></div>
-          <div id="sunburstChart" class="chart" aria-label="Sunburst breakdown"></div>
-          <div id="sankeyBreakdownChart" class="chart" aria-label="Energy flow (Steps → Process → Total)"></div>
-          <div id="sankeySourceChart" class="chart" aria-label="Energy source (Grid → Process → Steps)"></div>
+          <div id="sunburstChartA" class="chart" aria-label="Process A Sunburst breakdown"></div>
+          <div id="sunburstChartB" class="chart" aria-label="Process B Sunburst breakdown"></div>
+          <div id="sankeyChart" class="chart" aria-label="Detailed emissions flow (Sources → Steps → Processes → Total)"></div>
         </div>
         <div id="impactCallout" class="impact"></div>
       </section>
@@ -106,6 +114,11 @@
         </div>
         <div id="dbPanel" class="db-panel" hidden>
           <div class="db-grid">
+            <div>
+              <h3>Electricity (per kWh)</h3>
+              <div id="electricityTable" class="table"></div>
+              <button class="add-step" type="button" onclick="addElectricityRow()">Add electricity dataset</button>
+            </div>
             <div>
               <h3>Chemicals (kg CO₂e per kg)</h3>
               <div id="chemicalsTable" class="table"></div>

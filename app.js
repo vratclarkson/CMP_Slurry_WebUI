@@ -285,39 +285,118 @@ async function resetImpactDb() {
 function renderImpactDbTables() {
   const chemTable = document.getElementById('chemicalsTable');
   const watersTable = document.getElementById('watersTable');
+  const elecTable = document.getElementById('electricityTable');
   const elecSelect = document.getElementById('electricityDataset');
   if (chemTable) {
     chemTable.innerHTML = '';
+    // Header
+    const header = document.createElement('div');
+    header.className = 'row';
+    header.innerHTML = `
+      <label>Name</label>
+      <label>GWP</label>
+      <label>ADP</label>
+      <label>WaterUse</label>
+      <label>AP</label>
+      <label>FETP</label>
+      <span></span>
+    `;
+    chemTable.appendChild(header);
     impactDb.chemicals.forEach((c, idx) => {
       const row = document.createElement('div');
       row.className = 'row';
       row.innerHTML = `
         <input type="text" value="${c.name}" placeholder="Chemical name" />
         <input type="number" step="0.0001" value="${c.GWP}" placeholder="GWP per kg" />
+        <input type="number" step="0.0001" value="${c.ADP || 0}" placeholder="ADP" />
+        <input type="number" step="0.0001" value="${c.WaterUse || 0}" placeholder="WaterUse" />
+        <input type="number" step="0.0001" value="${c.AP || 0}" placeholder="AP" />
+        <input type="number" step="0.0001" value="${c.FETP || 0}" placeholder="FETP" />
         <button class="danger" type="button">✕</button>
       `;
-      const [nameInput, valInput, delBtn] = row.querySelectorAll('input,button');
+      const [nameInput, gwpInput, adpInput, waterInput, apInput, fetpInput, delBtn] = row.querySelectorAll('input,button');
       nameInput.addEventListener('input', () => { impactDb.chemicals[idx].name = nameInput.value; saveImpactDb(); });
-      valInput.addEventListener('input', () => { impactDb.chemicals[idx].GWP = Number(valInput.value) || 0; saveImpactDb(); });
+      gwpInput.addEventListener('input', () => { impactDb.chemicals[idx].GWP = Number(gwpInput.value) || 0; saveImpactDb(); });
+      adpInput.addEventListener('input', () => { impactDb.chemicals[idx].ADP = Number(adpInput.value) || 0; saveImpactDb(); });
+      waterInput.addEventListener('input', () => { impactDb.chemicals[idx].WaterUse = Number(waterInput.value) || 0; saveImpactDb(); });
+      apInput.addEventListener('input', () => { impactDb.chemicals[idx].AP = Number(apInput.value) || 0; saveImpactDb(); });
+      fetpInput.addEventListener('input', () => { impactDb.chemicals[idx].FETP = Number(fetpInput.value) || 0; saveImpactDb(); });
       delBtn.addEventListener('click', () => { impactDb.chemicals.splice(idx, 1); saveImpactDb(); renderImpactDbTables(); });
       chemTable.appendChild(row);
     });
   }
   if (watersTable) {
     watersTable.innerHTML = '';
+    const header = document.createElement('div');
+    header.className = 'row';
+    header.innerHTML = `
+      <label>Name</label>
+      <label>GWP</label>
+      <label>ADP</label>
+      <label>WaterUse</label>
+      <label>AP</label>
+      <label>FETP</label>
+      <span></span>
+    `;
+    watersTable.appendChild(header);
     impactDb.waters.forEach((w, idx) => {
       const row = document.createElement('div');
       row.className = 'row';
       row.innerHTML = `
         <input type="text" value="${w.name}" placeholder="Water type" />
         <input type="number" step="0.0001" value="${w.GWP}" placeholder="GWP per liter" />
+        <input type="number" step="0.0001" value="${w.ADP || 0}" placeholder="ADP" />
+        <input type="number" step="0.0001" value="${w.WaterUse || 1}" placeholder="WaterUse" />
+        <input type="number" step="0.0001" value="${w.AP || 0}" placeholder="AP" />
+        <input type="number" step="0.0001" value="${w.FETP || 0}" placeholder="FETP" />
         <button class="danger" type="button">✕</button>
       `;
-      const [nameInput, valInput, delBtn] = row.querySelectorAll('input,button');
+      const [nameInput, gwpInput, adpInput, waterInput, apInput, fetpInput, delBtn] = row.querySelectorAll('input,button');
       nameInput.addEventListener('input', () => { impactDb.waters[idx].name = nameInput.value; saveImpactDb(); });
-      valInput.addEventListener('input', () => { impactDb.waters[idx].GWP = Number(valInput.value) || 0; saveImpactDb(); });
+      gwpInput.addEventListener('input', () => { impactDb.waters[idx].GWP = Number(gwpInput.value) || 0; saveImpactDb(); });
+      adpInput.addEventListener('input', () => { impactDb.waters[idx].ADP = Number(adpInput.value) || 0; saveImpactDb(); });
+      waterInput.addEventListener('input', () => { impactDb.waters[idx].WaterUse = Number(waterInput.value) || 0; saveImpactDb(); });
+      apInput.addEventListener('input', () => { impactDb.waters[idx].AP = Number(apInput.value) || 0; saveImpactDb(); });
+      fetpInput.addEventListener('input', () => { impactDb.waters[idx].FETP = Number(fetpInput.value) || 0; saveImpactDb(); });
       delBtn.addEventListener('click', () => { impactDb.waters.splice(idx, 1); saveImpactDb(); renderImpactDbTables(); });
       watersTable.appendChild(row);
+    });
+  }
+  if (elecTable) {
+    elecTable.innerHTML = '';
+    const header = document.createElement('div');
+    header.className = 'row';
+    header.innerHTML = `
+      <label>Name</label>
+      <label>GWP</label>
+      <label>ADP</label>
+      <label>WaterUse</label>
+      <label>AP</label>
+      <label>FETP</label>
+      <span></span>
+    `;
+    elecTable.appendChild(header);
+    impactDb.electricity.forEach((e, idx) => {
+      const row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = `
+        <input type="text" value="${e.name}" placeholder="Dataset name" />
+        <input type="number" step="0.0001" value="${e.GWP || 0}" placeholder="GWP per kWh" />
+        <input type="number" step="0.0001" value="${e.ADP || 0}" placeholder="ADP" />
+        <input type="number" step="0.0001" value="${e.WaterUse || 0}" placeholder="WaterUse" />
+        <input type="number" step="0.0001" value="${e.AP || 0}" placeholder="AP" />
+        <input type="number" step="0.0001" value="${e.FETP || 0}" placeholder="FETP" />
+        <button class="danger" type="button">✕</button>
+      `;
+      const [nameInput, gwpInput, adpInput, waterInput, apInput, fetpInput, delBtn] = row.querySelectorAll('input,button');
+      nameInput.addEventListener('input', () => { impactDb.electricity[idx].name = nameInput.value; saveImpactDb(); });
+      gwpInput.addEventListener('input', () => { impactDb.electricity[idx].GWP = Number(gwpInput.value) || 0; saveImpactDb(); });
+      adpInput.addEventListener('input', () => { impactDb.electricity[idx].ADP = Number(adpInput.value) || 0; saveImpactDb(); });
+      waterInput.addEventListener('input', () => { impactDb.electricity[idx].WaterUse = Number(waterInput.value) || 0; saveImpactDb(); });
+      apInput.addEventListener('input', () => { impactDb.electricity[idx].AP = Number(apInput.value) || 0; saveImpactDb(); });
+      fetpInput.addEventListener('input', () => { impactDb.electricity[idx].FETP = Number(fetpInput.value) || 0; saveImpactDb(); });
+      delBtn.addEventListener('click', () => { impactDb.electricity.splice(idx, 1); saveImpactDb(); renderImpactDbTables(); });
+      elecTable.appendChild(row);
     });
   }
   if (elecSelect) {
@@ -350,6 +429,10 @@ function addChemicalRow() {
 }
 function addWaterRow() {
   impactDb.waters.push({ name: '', GWP: 0, ADP: 0, WaterUse: 0, AP: 0, FETP: 0 });
+  renderImpactDbTables();
+}
+function addElectricityRow() {
+  impactDb.electricity.push({ name: '', GWP: 0, ADP: 0, WaterUse: 0, AP: 0, FETP: 0 });
   renderImpactDbTables();
 }
 function toggleDbPanel() {
@@ -468,16 +551,20 @@ function computeStepOutputs(stepEl, processName) {
   const energyKWh = spec.energyKWh(values) || 0;
   let waterKg = spec.waterKg(values) || 0;
 
-  // Materials & waters CO2e contribution
+  // Materials & waters CO2e contribution (track per-item too)
   let materialCo2e = 0;
   let waterCo2e = 0;
+  const materialItems = [];
+  const waterItems = [];
   const matRows = stepEl.querySelectorAll('.material-row');
   matRows.forEach(row => {
     const name = row.querySelector('.chem-name')?.value || '';
     const amt = Number(row.querySelector('.chem-amount')?.value) || 0;
     const indicator = document.getElementById('impactIndicator')?.value || 'GWP';
     let factor = impactDb.chemicals.find(c => c.name === name)?.[indicator] || 0;
-    materialCo2e += amt * factor;
+    const co2e = amt * factor;
+    materialCo2e += co2e;
+    if (name) materialItems.push({ name, amount: amt, co2e });
   });
   const waterRows = stepEl.querySelectorAll('.water-row');
   waterRows.forEach(row => {
@@ -485,13 +572,15 @@ function computeStepOutputs(stepEl, processName) {
     const vol = Number(row.querySelector('.water-amount')?.value) || 0; // liters
     const indicator = document.getElementById('impactIndicator')?.value || 'GWP';
     let factor = impactDb.waters.find(w => w.name === name)?.[indicator] || 0;
-    waterCo2e += vol * factor;
+    const co2e = vol * factor;
+    waterCo2e += co2e;
+    if (name) waterItems.push({ name, volumeL: vol, co2e });
     // add solvent water to water mass metric (1 L ≈ 1 kg)
     waterKg += vol;
   });
 
   // Electricity impacts per indicator (local only)
-  const indicator = 'GWP';
+  const indicator = document.getElementById('impactIndicator')?.value || 'GWP';
   let energyImpact = 0;
   const ds = document.getElementById('electricityDataset');
   const elecs = Array.isArray(impactDb.electricity) ? impactDb.electricity : [];
@@ -503,6 +592,8 @@ function computeStepOutputs(stepEl, processName) {
   stepEl.dataset.energyCo2e = String(Math.max(0, energyImpact));
   stepEl.dataset.materialCo2e = String(Math.max(0, materialCo2e));
   stepEl.dataset.waterCo2e = String(Math.max(0, waterCo2e));
+  stepEl.dataset.materialItems = JSON.stringify(materialItems);
+  stepEl.dataset.waterItems = JSON.stringify(waterItems);
   stepEl.querySelector('input[name="energy"]').value = (Math.round(energyKWh * 100) / 100).toString();
   stepEl.querySelector('input[name="water"]').value = (Math.round(waterKg * 100) / 100).toString();
   stepEl.querySelector('input[name="emissions"]').value = (Math.round(emissions * 100) / 100).toString();
@@ -595,7 +686,11 @@ function collectData(process) {
     const emissionsEnergy = Number(step.dataset.energyCo2e || 0);
     const emissionsMaterials = Number(step.dataset.materialCo2e || 0);
     const emissionsWater = Number(step.dataset.waterCo2e || 0);
-    return { name: processName, label: customLabel, inputs, energy, water, emissions, emissionsEnergy, emissionsMaterials, emissionsWater };
+    let materials = [];
+    let waters = [];
+    try { materials = JSON.parse(step.dataset.materialItems || '[]') || []; } catch (_) { materials = []; }
+    try { waters = JSON.parse(step.dataset.waterItems || '[]') || []; } catch (_) { waters = []; }
+    return { name: processName, label: customLabel, inputs, energy, water, emissions, emissionsEnergy, emissionsMaterials, emissionsWater, materials, waters };
   });
 }
 
@@ -697,8 +792,19 @@ window.onload = async () => {
   // Start with one empty step per side
   await loadImpactDb();
   renderImpactDbTables();
+  // Always show FS buttons regardless of metric selection by rendering once
   addStep('A');
   addStep('B');
+  // React to indicator changes
+  const impactSel = document.getElementById('impactIndicator');
+  if (impactSel) impactSel.addEventListener('change', () => {
+    // Recompute all steps to update emissions for selected indicator
+    document.querySelectorAll('.process-steps .step').forEach(step => {
+      const procSel = step.querySelector('.process-select');
+      if (procSel && procSel.value) computeStepOutputs(step, procSel.value);
+    });
+    renderVisualizations();
+  });
 };
 
 // ---------- Visualization (ECharts) and PDF Export ----------
@@ -724,26 +830,29 @@ function renderVisualizations() {
   // Bars: grouped totals (stacked emissions components)
   const barsEl = document.getElementById('barsChart');
   if (barsEl && window.echarts) {
+    injectFullscreenButton(barsEl);
     const chart = echarts.init(barsEl);
     chart.setOption({
       darkMode: true,
       tooltip: { trigger: 'axis' },
-      legend: { data: [processes.A.name, processes.B.name, 'Emissions — Energy', 'Emissions — Materials', 'Emissions — Water'] },
+      legend: { data: [processes.A.name, processes.B.name, `Emissions — Energy (${document.getElementById('impactIndicator')?.value || 'GWP'})`, 'Emissions — Materials', 'Emissions — Water'] },
       xAxis: { type: 'category', data: ['Energy (kWh)', 'Water (kg)', 'Emissions (kg CO₂e)'] },
       yAxis: { type: 'value' },
       series: [
         { name: processes.A.name, type: 'bar', stack: 'totals', data: [format(totalsA.energy), format(totalsA.water), 0], itemStyle: { opacity: 0.9 } },
         { name: processes.B.name, type: 'bar', stack: 'totals', data: [format(totalsB.energy), format(totalsB.water), 0], itemStyle: { opacity: 0.9 } },
-        { name: 'Emissions — Energy', type: 'bar', stack: 'A-emi', data: [0, 0, format(totalsA.emissionsEnergy + totalsB.emissionsEnergy)], itemStyle: { color: '#6aa6ff' } },
+        { name: `Emissions — Energy (${document.getElementById('impactIndicator')?.value || 'GWP'})`, type: 'bar', stack: 'A-emi', data: [0, 0, format(totalsA.emissionsEnergy + totalsB.emissionsEnergy)], itemStyle: { color: '#6aa6ff' } },
         { name: 'Emissions — Materials', type: 'bar', stack: 'A-emi', data: [0, 0, format(totalsA.emissionsMaterials + totalsB.emissionsMaterials)], itemStyle: { color: '#2cd498' } },
         { name: 'Emissions — Water', type: 'bar', stack: 'A-emi', data: [0, 0, format(totalsA.emissionsWater + totalsB.emissionsWater)], itemStyle: { color: '#ff6a7d' } }
       ]
     });
+    window.addEventListener('resize', () => chart.resize());
   }
 
   // Heatmap: steps by selected metric (energy/water/emissions total only)
   const heatmapEl = document.getElementById('heatmapChart');
   if (heatmapEl && window.echarts) {
+    injectFullscreenButton(heatmapEl);
     const rows = ['A', 'B'];
     const cols = [];
     const matrixIndex = {};
@@ -785,90 +894,205 @@ function renderVisualizations() {
       visualMap: { min: 0, max: Math.max(...values.map(v => v[2]), 1), calculable: true, orient: 'horizontal', left: 'center', bottom: '5%' },
       series: [{ name: 'Heatmap', type: 'heatmap', data: values, label: { show: false }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' } } }]
     });
+    window.addEventListener('resize', () => chart.resize());
   }
 
-  // Sunburst: hierarchy Process -> Step -> Metric contributions
-  const sunburstEl = document.getElementById('sunburstChart');
-  if (sunburstEl && window.echarts) {
+  // Create separate sunburst charts for each process
+  const createSunburst = (elementId, processName, steps, title) => {
+    const sunburstEl = document.getElementById(elementId);
+    if (!sunburstEl || !window.echarts) return;
+    
+    injectFullscreenButton(sunburstEl);
     const metricKey = document.getElementById('sunburstMetric')?.value || 'energy';
-    const toNode = (label, steps) => ({
-      name: label,
-      children: steps.map((s, i) => {
-        const base = { name: `${label}-${i+1} ${s.name}` };
-        if (metricKey === 'emissions') {
-          return {
-            ...base,
-            value: format(s.emissions),
-            children: [
-              { name: 'Energy CO₂e', value: format(s.emissionsEnergy) },
-              { name: 'Materials CO₂e', value: format(s.emissionsMaterials) },
-              { name: 'Water CO₂e', value: format(s.emissionsWater) },
-            ]
+    
+    // Palette for different levels
+    const STEP_PALETTE = [
+      '#e26b5b', '#f0c419', '#b57edc', '#ffa600', '#8dd3c7', '#fb9a99', '#80b1d3', '#b3de69'
+    ];
+    const SUB_COLORS = {
+      'Energy CO₂e': '#d84f4f',
+      'Materials CO₂e': '#2ca25f', 
+      'Water CO₂e': '#3182bd'
+    };
+
+    const totalValue = steps.reduce((sum, s) => sum + (Number(s[metricKey]) || 0), 0);
+    
+    if (totalValue <= 0) {
+      const chart = echarts.init(sunburstEl);
+      chart.clear();
+      return;
+    }
+
+    const data = [
+      {
+        name: processName,
+        value: totalValue,
+        itemStyle: { color: '#223153', borderColor: '#0b132b', borderWidth: 2 },
+        children: steps.map((s, i) => {
+          const stepValue = Number(s[metricKey]) || 0;
+          const base = {
+            name: s.name || `Step ${i+1}`,
+            value: stepValue,
+            itemStyle: { 
+              color: STEP_PALETTE[i % STEP_PALETTE.length], 
+              borderColor: '#0b132b', 
+              borderWidth: 2 
+            }
           };
-        }
-        return { ...base, value: format(s[metricKey]) };
-      })
-    });
-    const data = [toNode(processes.A.name, a), toNode(processes.B.name, b)];
+          
+          if (metricKey === 'emissions' && stepValue > 0) {
+            const energyVal = Number(s.emissionsEnergy) || 0;
+            const materialsVal = Number(s.emissionsMaterials) || 0;
+            const waterVal = Number(s.emissionsWater) || 0;
+            
+            if (energyVal + materialsVal + waterVal > 0) {
+              return {
+                ...base,
+                children: [
+                  ...(energyVal > 0 ? [{ name: 'Energy', value: energyVal, itemStyle: { color: SUB_COLORS['Energy CO₂e'], borderColor: '#0b132b', borderWidth: 1 } }] : []),
+                  ...(materialsVal > 0 ? [{ name: 'Materials', value: materialsVal, itemStyle: { color: SUB_COLORS['Materials CO₂e'], borderColor: '#0b132b', borderWidth: 1 } }] : []),
+                  ...(waterVal > 0 ? [{ name: 'Water', value: waterVal, itemStyle: { color: SUB_COLORS['Water CO₂e'], borderColor: '#0b132b', borderWidth: 1 } }] : [])
+                ]
+              };
+            }
+          }
+          
+          return base;
+        }).filter(step => step.value > 0)
+      }
+    ];
+
     const chart = echarts.init(sunburstEl);
     chart.setOption({
-      darkMode: true,
+      title: {
+        text: title,
+        left: 'center',
+        top: 10,
+        textStyle: {
+          color: '#e8eeff',
+          fontSize: 14,
+          fontWeight: 600
+        }
+      },
+      tooltip: { 
+        formatter: (params) => {
+          const value = params.value || 0;
+          return `${params.name}: ${(Math.round(value * 100) / 100).toLocaleString()}`;
+        }
+      },
       series: {
         type: 'sunburst',
-        data,
-        radius: [0, '90%'],
+        data: data,
+        radius: [30, '80%'],
         sort: null,
+        nodeClick: false,
         emphasis: { focus: 'ancestor' },
+        label: { 
+          show: true,
+          color: '#e8eeff',
+          fontSize: 10,
+          fontWeight: 500,
+          overflow: 'truncate'
+        },
+        labelLine: { show: false },
+        labelLayout: {
+          hideOverlap: true,
+          moveOverlap: 'shiftY'
+        },
         levels: [
-          {},
-          { r0: '0%', r: '30%', label: { rotate: 0 } },
-          { r0: '30%', r: '60%' },
-          { r0: '60%', r: '90%' }
+          { 
+            r0: 30, 
+            r: '40%',
+            label: { 
+              position: 'inside',
+              rotate: 0,
+              fontSize: 13,
+              fontWeight: 600,
+              color: '#ffffff',
+              overflow: 'break'
+            }
+          }, // center level
+          { 
+            r0: '40%', 
+            r: '75%',
+            label: { 
+              position: 'inside',
+              rotate: 'radial',
+              fontSize: 11,
+              fontWeight: 500,
+              color: '#ffffff',
+              distance: 8,
+              overflow: 'truncate'
+            }
+          }, // step level
+          { 
+            r0: '75%', 
+            r: '90%',
+            label: { 
+              position: 'outside',
+              rotate: 0,
+              fontSize: 10,
+              fontWeight: 400,
+              color: '#b5c3e0',
+              distance: 6,
+              overflow: 'truncate'
+            },
+            labelLine: {
+              show: true,
+              length: 8,
+              length2: 4,
+              smooth: 0.2,
+              lineStyle: {
+                color: '#b5c3e0',
+                width: 1,
+                type: 'solid'
+              }
+            }
+          } // breakdown level
         ]
-      },
-      tooltip: { formatter: (p) => `${p.name}: ${format(p.value)}` }
+      }
     });
-  }
+    
+    window.addEventListener('resize', () => chart.resize());
+  };
 
-  // Sankey: Steps -> Process -> Total (emissions breakdown)
-  const sankeyBreakEl = document.getElementById('sankeyBreakdownChart');
-  if (sankeyBreakEl && window.echarts) {
+  // Create both sunburst charts
+  createSunburst('sunburstChartA', processes.A.name, a, processes.A.name);
+  createSunburst('sunburstChartB', processes.B.name, b, processes.B.name);
+
+  // Sankey: Unified detailed flow — isolate A and B (no Total node)
+  const sankeyEl = document.getElementById('sankeyChart');
+  if (sankeyEl && window.echarts) {
+    injectFullscreenButton(sankeyEl);
     const nodes = [];
     const links = [];
     const addNode = (name) => { if (!nodes.find(n => n.name === name)) nodes.push({ name }); };
 
-    const totalNode = 'Total Emissions';
-    addNode(totalNode);
-
-    const procNodes = [`${processes.A.name} Emissions`, `${processes.B.name} Emissions`];
+    // Keep processes separate; they are final sinks in this diagram
+    const procNodes = [processes.A.name, processes.B.name];
     procNodes.forEach(addNode);
 
-    const sum = (arr, k) => arr.reduce((s, x) => s + (Number(x[k]) || 0), 0);
-    const totalAE = sum(a, 'emissions');
-    const totalBE = sum(b, 'emissions');
+    const indicator = document.getElementById('impactIndicator')?.value || 'GWP';
 
-    // Process -> Total
-    links.push({ source: `${processes.A.name} Emissions`, target: totalNode, value: format(totalAE) });
-    links.push({ source: `${processes.B.name} Emissions`, target: totalNode, value: format(totalBE) });
-
-    // Steps components -> Process
-    const addStepComponent = (procName, s, idx, label, value) => {
-      const node = `${procName}-${idx} ${s.name} (${label})`;
-      addNode(node);
-      links.push({ source: node, target: `${procName} Emissions`, value: format(value) });
+    const addForProcess = (procName, steps) => {
+      steps.forEach((s, idx) => {
+        const stepNode = `${procName}-${idx+1} ${s.name}`;
+        addNode(stepNode);
+        // Step → Process (total)
+        links.push({ source: stepNode, target: procName, value: format(s.emissions) });
+        // Energy
+        if (s.emissionsEnergy) { const n = `${procName} — Grid Electricity (${indicator})`; addNode(n); links.push({ source: n, target: stepNode, value: format(s.emissionsEnergy) }); }
+        // Materials (per chemical)
+        (s.materials || []).forEach(m => { if (!m || !m.co2e) return; const n = `${procName} — ${m.name} (Material)`; addNode(n); links.push({ source: n, target: stepNode, value: format(m.co2e) }); });
+        // Waters (per type)
+        (s.waters || []).forEach(w => { if (!w || !w.co2e) return; const n = `${procName} — ${w.name} (Water)`; addNode(n); links.push({ source: n, target: stepNode, value: format(w.co2e) }); });
+      });
     };
-    a.forEach((s, i) => {
-      addStepComponent(processes.A.name, s, i+1, 'Energy', s.emissionsEnergy || 0);
-      addStepComponent(processes.A.name, s, i+1, 'Materials', s.emissionsMaterials || 0);
-      addStepComponent(processes.A.name, s, i+1, 'Water', s.emissionsWater || 0);
-    });
-    b.forEach((s, i) => {
-      addStepComponent(processes.B.name, s, i+1, 'Energy', s.emissionsEnergy || 0);
-      addStepComponent(processes.B.name, s, i+1, 'Materials', s.emissionsMaterials || 0);
-      addStepComponent(processes.B.name, s, i+1, 'Water', s.emissionsWater || 0);
-    });
 
-    const chart = echarts.init(sankeyBreakEl);
+    addForProcess(processes.A.name, a);
+    addForProcess(processes.B.name, b);
+
+    const chart = echarts.init(sankeyEl);
     chart.setOption({
       darkMode: true,
       tooltip: { trigger: 'item', triggerOn: 'mousemove' },
@@ -881,57 +1105,7 @@ function renderVisualizations() {
         nodeAlign: 'left'
       }]
     });
-  }
-
-  // Sankey: Sources -> Process -> Steps (emissions sources)
-  const sankeySourceEl = document.getElementById('sankeySourceChart');
-  if (sankeySourceEl && window.echarts) {
-    const nodes = [];
-    const links = [];
-    const addNode = (name) => { if (!nodes.find(n => n.name === name)) nodes.push({ name }); };
-
-    const sources = ['Grid Electricity', 'Upstream Materials', 'Upstream Water'];
-    const procNodes = [processes.A.name, processes.B.name];
-    [...sources, ...procNodes].forEach(addNode);
-
-    const sum = (arr, k) => arr.reduce((s, x) => s + (Number(x[k]) || 0), 0);
-    const totalsSrcA = { grid: sum(a, 'emissionsEnergy'), mats: sum(a, 'emissionsMaterials'), water: sum(a, 'emissionsWater') };
-    const totalsSrcB = { grid: sum(b, 'emissionsEnergy'), mats: sum(b, 'emissionsMaterials'), water: sum(b, 'emissionsWater') };
-    links.push({ source: 'Grid Electricity', target: processes.A.name, value: format(totalsSrcA.grid) });
-    links.push({ source: 'Upstream Materials', target: processes.A.name, value: format(totalsSrcA.mats) });
-    links.push({ source: 'Upstream Water', target: processes.A.name, value: format(totalsSrcA.water) });
-    links.push({ source: 'Grid Electricity', target: processes.B.name, value: format(totalsSrcB.grid) });
-    links.push({ source: 'Upstream Materials', target: processes.B.name, value: format(totalsSrcB.mats) });
-    links.push({ source: 'Upstream Water', target: processes.B.name, value: format(totalsSrcB.water) });
-
-    a.forEach((s, i) => {
-      const stepNode = `${processes.A.name}-${i+1} ${s.name}`;
-      addNode(stepNode);
-      if (s.emissionsEnergy) links.push({ source: processes.A.name, target: stepNode, value: format(s.emissionsEnergy) });
-      if (s.emissionsMaterials) links.push({ source: processes.A.name, target: stepNode, value: format(s.emissionsMaterials) });
-      if (s.emissionsWater) links.push({ source: processes.A.name, target: stepNode, value: format(s.emissionsWater) });
-    });
-    b.forEach((s, i) => {
-      const stepNode = `${processes.B.name}-${i+1} ${s.name}`;
-      addNode(stepNode);
-      if (s.emissionsEnergy) links.push({ source: processes.B.name, target: stepNode, value: format(s.emissionsEnergy) });
-      if (s.emissionsMaterials) links.push({ source: processes.B.name, target: stepNode, value: format(s.emissionsMaterials) });
-      if (s.emissionsWater) links.push({ source: processes.B.name, target: stepNode, value: format(s.emissionsWater) });
-    });
-
-    const chart = echarts.init(sankeySourceEl);
-    chart.setOption({
-      darkMode: true,
-      tooltip: { trigger: 'item', triggerOn: 'mousemove' },
-      series: [{
-        type: 'sankey',
-        data: nodes,
-        links,
-        emphasis: { focus: 'adjacency' },
-        lineStyle: { color: 'gradient', curveness: 0.5 },
-        nodeAlign: 'left'
-      }]
-    });
+    window.addEventListener('resize', () => chart.resize());
   }
 
   // Impact callout: identify top contributing step across metrics
@@ -955,6 +1129,31 @@ function renderVisualizations() {
         </ul>
       </div>
     `;
+  }
+}
+
+// Per-chart fullscreen toggle injected as overlay button
+function injectFullscreenButton(container) {
+  if (!container || container.querySelector('.fs-btn')) return;
+  const btn = document.createElement('button');
+  btn.className = 'fs-btn';
+  btn.type = 'button';
+  btn.textContent = 'Fullscreen';
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleChartFullscreen(container, btn);
+  });
+  container.appendChild(btn);
+}
+
+function toggleChartFullscreen(chartEl, btn) {
+  chartEl.classList.toggle('fullscreen');
+  btn.textContent = chartEl.classList.contains('fullscreen') ? 'Exit' : 'Fullscreen';
+  if (window.echarts) {
+    setTimeout(() => {
+      const inst = echarts.getInstanceByDom(chartEl) || echarts.init(chartEl);
+      inst.resize();
+    }, 50);
   }
 }
 
